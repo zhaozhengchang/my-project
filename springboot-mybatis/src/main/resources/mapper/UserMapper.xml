@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzc.springbootmybatis.dal.UserDao">
+    <resultMap id="UserResultMap" type="com.zzc.springbootmybatis.dal.model.User">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="username" property="userNamE" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getUser" parameterType="string" resultMap="UserResultMap">
+      select * from user
+          where username = #{username}
+  </select>
+
+</mapper>
