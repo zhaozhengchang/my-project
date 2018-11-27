@@ -31,7 +31,9 @@ public class DubboClientApplicationTests {
 
     @Test
     public void godsEys(){
-        godseyeTest.get();
+        for (int i = 0; i < 50; i++) {
+            godseyeTest.get();
+        }
     }
 
 }
