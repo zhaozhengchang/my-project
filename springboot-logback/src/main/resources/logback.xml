@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 30分钟扫描一次配置文件，如果修改了会重新加载 -->
-<configuration debug="false" scan="true" scanPeriod="5 seconds">
+<configuration debug="false" scan="true" scanPeriod="30 minutes">
 
-    <!-- ==================================================================================== -->
-    <property name="logDir" value="D:/log"/>
+    <!-- =================================变量定义=================================================== -->
+    <!-- 日志根目录，这样为相对路径，springboot中跟module平级，服务器中用sh脚本启动的话跟脚本文件平级 -->
+    <property name="rootDir" value="logs"/>
+    <property name="failName" value="zzclog"/>
+    <!-- 单个文件最大容量 -->
+    <property name="maxFileSize" value="1000KB"/>
+    <!-- 日志格式，比如最小单位是dd的话就是每天生成一个日志文件 -->
+    <property name="dateFormat" value="yyyy-MM-dd.HH"/>
+    <!-- =================================打印日志=================================================== -->
     <!-- 打印到控制台 -->
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level-%logger{5} - %msg%n</pattern>
         </encoder>
     </appender>
-
+    <!-- debug日志 -->
     <appender name="debuglog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <!--  只记录DEBUG级别日志  -->
@@ -19,19 +26,19 @@
             <onMismatch>DENY</onMismatch>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logDir}/debug.%d{yyyy-MM-dd.HH}.%i.log.gz</fileNamePattern>
-            <!-- 限制文件最大保存时间为15天; 15*24=360 -->
-            <maxHistory>360</maxHistory>
+            <!-- 指定日志文件格式（设置为yyyy-MM-dd时每天会生成一个文件，就算老的文件空的也会生成新的文件）；超过文件最大值时会打成 压缩包  -->
+            <fileNamePattern>${rootDir}/${failName}.debug.%d{${dateFormat}}.%i.log.gz</fileNamePattern>
+            <!-- 限制文件最大保存时间,跟文件格式的日期有关，此值的单位是日期格式最小单位（如果要保留30天日志，最小单位是dd则设为30，最小单位为HH，则设成30*24） -->
+            <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- 当文件大小超过60M时触发滚动,这里设置60M -->
-                <maxFileSize>100KB</maxFileSize>
+                <maxFileSize>${maxFileSize}</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
             <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level-%logger{5} - %msg%n</pattern>
         </encoder>
     </appender>
-    <!-- ==================================================================================== -->
     <appender name="infolog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <!--  只记录info级别日志  -->
@@ -40,20 +47,16 @@
             <onMismatch>DENY</onMismatch>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- 超过文件最大值时会打成 压缩包  -->
-            <fileNamePattern>${logDir}/info.%d{yyyy-MM-dd.HH}.%i.log.gz</fileNamePattern>
-            <!-- 限制文件最大保存时间为15天; 15*24=360 -->
-            <maxHistory>360</maxHistory>
+            <fileNamePattern>${rootDir}/${failName}.info.%d{${dateFormat}}.%i.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- 当文件大小超过60M时触发滚动,这里设置60M -->
-                <maxFileSize>100KB</maxFileSize>
+                <maxFileSize>${maxFileSize}</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
             <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level-%logger{5} - %msg%n</pattern>
         </encoder>
     </appender>
-
 
     <appender name="errorlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -61,42 +64,88 @@
             <level>WARN</level>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logDir}/warn.%d{yyyy-MM-dd.HH}.%i.log.gz</fileNamePattern>
-            <!-- 限制文件最大保存时间为15天; 15*24=360 -->
-            <maxHistory>360</maxHistory>
+            <fileNamePattern>${rootDir}/${failName}.warn.%d{${dateFormat}}.%i.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- 当文件大小超过60M时触发滚动,这里设置60M -->
-                <maxFileSize>100KB</maxFileSize>
+                <maxFileSize>${maxFileSize}</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
             <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level-%logger{5} - %msg%n</pattern>
         </encoder>
     </appender>
+    <!-- 不同用户日志打印到不同文件，SiftingAppender相当于分发器（根据zzc的值进行分发到内层appender） -->
+    <appender name="userlog" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <!-- 自定义分发器 -->
+        <discriminator class="ch.qos.logback.classic.sift.MDCBasedDiscriminator">
+            <key>zzc</key>
+            <defaultValue>aaa</defaultValue>
+        </discriminator>
+        <sift>
+            <appender  class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                    <level>INFO</level>
+                    <onMatch>ACCEPT</onMatch>
+                    <onMismatch>DENY</onMismatch>
+                </filter>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <fileNamePattern>${rootDir}/${zzc}.user_async.%d{${dateFormat}}.%i.log.gz</fileNamePattern>
+                    <maxHistory>2</maxHistory>
+                    <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                        <maxFileSize>${maxFileSize}</maxFileSize>
+                    </timeBasedFileNamingAndTriggeringPolicy>
+                </rollingPolicy>
+                <encoder>
+                    <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level-%logger{5} - %msg%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
 
-
-    <!-- 异步日志配置 -->
+    <!-- ===================================异步设置================================================= -->
     <appender name="infolog_async" class="ch.qos.logback.classic.AsyncAppender">
         <!-- 默认情况下，当BlockingQueue还有20%容量，他将丢弃TRACE、DEBUG和INFO级别的event，只保留WARN和ERROR级别的event。为了保持所有的events，设置该值为0。 -->
         <discardingThreshold>0</discardingThreshold>
-        <!--  默认长度为256  -->
-        <queueSize>256</queueSize>
+        <!--
+            默认情况下，event queue配置最大容量为256个events。如果队列被填满，应用程序线程被阻止记录新的events，直到工作线程有机会来转发一个或多个events。
+            因此队列深度需要根据业务场景进行相应的测试，做出相应的更改，以达到较好的性能。
+            这个值要设置保证队列永远不会满，不然跟同步性能差不多，或者比同步更低（测试了比同步还低，不知为啥）,最好也不要设置太大，否则日志记录延迟太长。
+        -->
+        <queueSize>1024</queueSize>
         <appender-ref ref="infolog"/>
     </appender>
 
     <appender name="errorlog_async" class="ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
-        <queueSize>256</queueSize>
+        <queueSize>1024</queueSize>
         <appender-ref ref="errorlog"/>
     </appender>
 
+    <appender name="user_async" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <appender-ref ref="userlog"/>
+    </appender>
+    <!-- =====================================不同包打印到不同文件=============================================== -->
 
+    <!-- 跟root功能一样，一般单独使用，如果继承root的话可能会打印两次日志。additivity为true时还会继承root，false不会继承（root也是logger，是logger的父类）；level:日志级别 -->
+    <logger name="com.zzc.springbootlogback.controller" level="INFO" additivity="true" >
+        <appender-ref ref="stdout"/>
+    </logger>
+    <logger name="com.zzc.springbootlogback.log1" level="INFO" additivity="false" >
+        <appender-ref ref="errorlog"/>
+    </logger>
+
+    <!-- ======================================== root配置============================================ -->
+    <!-- logger的父类。   生产要把控制台打日志关掉; level控制总输出级别（设置为warn时info日志不会输出到文件的） -->
     <root level="info">
-        <!--<appender-ref ref="stdout" />-->
-        <!--<appender-ref ref="debuglog" />-->
+        <appender-ref ref="stdout" />
+        <appender-ref ref="debuglog" />
         <appender-ref ref="infolog_async"/>
         <appender-ref ref="errorlog_async"/>
+        <appender-ref ref="user_async"/>
     </root>
+    <!-- ==================================================================================== -->
 
 
 </configuration>

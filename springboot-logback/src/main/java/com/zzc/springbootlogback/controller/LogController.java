@@ -1,11 +1,9 @@
 package com.zzc.springbootlogback.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author zhaoZhengchang
@@ -17,13 +15,20 @@ import java.util.List;
 public class LogController {
 
     @GetMapping("/log")
-    public void log() throws InterruptedException {
+    public Long log(String userid,String name) throws InterruptedException {
         long start = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++) {
-            log.info("*****************info" + i);
-            log.warn("*****************warn" + i);
+        try {
+            MDC.put("zzc",name);
+            for (int i = 0; i < 1; i++) {
+                log.info("*****************info" + i);
+                log.warn("*****************warn" + i);
+            }
+            String s = null ;
+        }catch (Exception e){
+            log.error("异常：",e);
         }
-        System.out.println("耗时：" + (System.currentTimeMillis() - start));
+//        System.out.println("耗时：" + (System.currentTimeMillis() - start));
+        return (System.currentTimeMillis() - start) ;
     }
 
 

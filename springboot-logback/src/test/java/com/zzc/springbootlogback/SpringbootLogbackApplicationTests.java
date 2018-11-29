@@ -18,8 +18,12 @@ public class SpringbootLogbackApplicationTests {
 
     @Test
     public void contextLoads() throws InterruptedException {
-
-        logController.log();
+        Long sum = 0L;
+        int  count = 10 ;
+        for (int i = 0; i < count; i++) {
+            sum += logController.log("userid111","name111");
+        }
+        System.out.println("总耗时：" + sum +" ms ，平均耗时：" + sum/count);
 
     }
 
