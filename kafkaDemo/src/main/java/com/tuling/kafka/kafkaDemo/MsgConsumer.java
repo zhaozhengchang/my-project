@@ -1,29 +1,28 @@
 package com.tuling.kafka.kafkaDemo;
 
-import java.util.Arrays;
-import java.util.Properties;
-
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.TopicPartition;
+
+import java.util.Arrays;
+import java.util.Properties;
 
 public class MsgConsumer {
 	public static void main(String[] args) {
 		Properties props = new Properties();
-		props.put("bootstrap.servers", "47.107.171.101:8000");
+		props.put("bootstrap.servers", "47.107.171.101:8000,47.107.171.101:8001,47.107.171.101:8002");
 		// 消费分组名
-		props.put("group.id", "testGroup");
+		props.put("group.id", "testGroup1");
 		// 是否自动提交offset
-		/*props.put("enable.auto.commit", "true");
+		props.put("enable.auto.commit", "true");
 		// 自动提交offset的间隔时间
-		props.put("auto.commit.interval.ms", "1000");*/
-		props.put("enable.auto.commit", "false");
+		props.put("auto.commit.interval.ms", "1000");
+//		props.put("enable.auto.commit", "false");
 		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		KafkaConsumer<String, String> consumer = new KafkaConsumer(props);
 		// 消费主题
-		consumer.subscribe(Arrays.asList("test"));
+		consumer.subscribe(Arrays.asList("test1"));
 		// 消费指定分区
 		//consumer.assign(Arrays.asList(new TopicPartition("topic-replica-zhuge2", 0)));
 		while (true) {
@@ -35,12 +34,12 @@ public class MsgConsumer {
 			 */
 			ConsumerRecords<String, String> records = consumer.poll(1000);
 			for (ConsumerRecord<String, String> record : records) {
-				System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
+				System.out.printf("***************************************************offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
 			}
 			
 			if (records.count() > 0) { 
 				// 提交offset 
-				consumer.commitSync();
+//				consumer.commitSync();
 			}
 			 
 		}

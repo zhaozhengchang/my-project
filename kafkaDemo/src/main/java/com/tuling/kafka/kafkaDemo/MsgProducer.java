@@ -1,17 +1,13 @@
 package com.tuling.kafka.kafkaDemo;
 
+import org.apache.kafka.clients.producer.*;
+
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 
 public class MsgProducer {
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
+		//***************************参数设置方式1*************************************
 		Properties props = new Properties();
 		props.put("bootstrap.servers", "47.107.171.101:8000");
 		props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
@@ -25,6 +21,8 @@ public class MsgProducer {
 		props.put("delivery.timeout.ms", 30000);
 		//缓冲区大小，越大表示批量提交的数量越大，但是会消耗更多的内存
 		props.put("batch.size", 16384);
+		//生产者发送失败后重试次数，默认0 不重试
+		props.put("retries",3);
 		//我们将逗留时间设置为1毫秒，因此可能会在单个请求中发送所有100条记录。
 		// 但是，如果我们没有填满缓冲区，此设置将为我们的请求添加1毫秒的延迟，等待更多记录到达。
 		// 请注意，即使在linger.ms = 0的情况下，及时到达的记录通常也会一起批处理，因此在重负载下，
@@ -33,11 +31,23 @@ public class MsgProducer {
 		//buffer.memory控制生产者可用于缓冲的总内存量。如果记录的发送速度快于传输到服务器的速度，则此缓冲区空间将耗尽。
 		// 当缓冲区空间耗尽时，其他发送调用将被阻止。阻塞时间的阈值由max.block.ms确定，之后它会抛出TimeoutException。
 		props.put("buffer.memory", 33554432);
-		//****************************************************************
-		Producer<String, String> producer = new KafkaProducer<String, String>(props);
+
+		//***************************参数设置方式2*************************************
+		Properties props1 = new Properties() {{
+			put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "47.107.171.101:8000,47.107.171.101:8001,47.107.171.101:8002");
+			put(ProducerConfig.ACKS_CONFIG, "all");
+			put(ProducerConfig.RETRIES_CONFIG, 3);
+			put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
+			put(ProducerConfig.LINGER_MS_CONFIG, 1);
+			put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
+			put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+			put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+		}};
+
+		Producer<String, String> producer = new KafkaProducer<String, String>(props1);
 		for (int i = 0; i < 5; i++) {
 
-			ProducerRecord<String, String> producerRecord = new ProducerRecord("test", 6,"1","1111");
+			ProducerRecord<String, String> producerRecord = new ProducerRecord("test1","1111");
 
 			//同步方式发送消息
 			/*Future<RecordMetadata> result = producer.send(producerRecord);
