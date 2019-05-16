@@ -1,0 +1,19 @@
+2018-11-29 17:53:45.036 [main] INFO -c.z.s.SpringbootLogbackApplication - Starting SpringbootLogbackApplication on DESKTOP-76QKEJA with PID 19728 (N:\my-project\springboot-logback\target\classes started by ceiec-cym in N:\my-project)
+2018-11-29 17:53:45.039 [main] INFO -c.z.s.SpringbootLogbackApplication - No active profile set, falling back to default profiles: default
+2018-11-29 17:53:45.732 [main] INFO -o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-11-29 17:53:45.740 [main] INFO -o.a.c.h.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-11-29 17:53:45.743 [main] INFO -o.a.c.c.StandardService - Starting service [Tomcat]
+2018-11-29 17:53:45.744 [main] INFO -o.a.c.c.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.12
+2018-11-29 17:53:45.748 [main] INFO -o.a.c.c.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [D:\jdk\jdk8\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;H:\Program Files (x86)\360\360DeskTop;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;D:\Program Files\TortoiseSVN\bin;C:\Program Files\MySQL\MySQL Utilities 1.6\;D:\apache-maven-3.5.3\bin;D:\Program Files\Git\cmd;D:\pengbaobao\pycSafefile\x64;D:\mysql8.0\mysql-8.0.11-winx64\bin;D:\jdk\jdk8\bin;C:\Users\ceiec-cym\AppData\Local\Microsoft\WindowsApps;C:\Users\ceiec-cym\AppData\Local\atom\bin;C:\Users\ceiec-cym\AppData\Local\GitHubDesktop\bin;.]
+2018-11-29 17:53:45.816 [main] INFO -o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext
+2018-11-29 17:53:45.817 [main] INFO -o.s.w.c.ContextLoader - Root WebApplicationContext: initialization completed in 744 ms
+2018-11-29 17:53:45.833 [main] INFO -o.s.b.w.s.ServletRegistrationBean - Servlet dispatcherServlet mapped to [/]
+2018-11-29 17:53:45.835 [main] INFO -o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-11-29 17:53:45.836 [main] INFO -o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-11-29 17:53:45.836 [main] INFO -o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'formContentFilter' to: [/*]
+2018-11-29 17:53:45.836 [main] INFO -o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'requestContextFilter' to: [/*]
+2018-11-29 17:53:45.960 [main] INFO -o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-11-29 17:53:46.060 [main] INFO -o.a.c.h.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-11-29 17:53:46.067 [main] INFO -o.a.t.u.n.NioSelectorPool - Using a shared selector for servlet write/read
+2018-11-29 17:53:46.077 [main] INFO -o.s.b.w.e.t.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-11-29 17:53:46.080 [main] INFO -c.z.s.SpringbootLogbackApplication - Started SpringbootLogbackApplication in 1.324 seconds (JVM running for 1.978)
