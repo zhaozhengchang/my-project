@@ -1,0 +1,29 @@
+
+        -Xms512m -Xmx512m -Xss256k -Xmn128m -XX:MetaspaceSize=128M
+        -XX:MaxMetaspaceSize=128M -XX:+UseParNewGC -XX:+UseConcMarkSweepGC
+         -XX:+UseBiasedLocking
+        -XX:+UseCMSCompactAtFullCollection -XX:+UseCMSInitiatingOccupancyOnly
+
+
+
+        -XX:+CMSParallelRemarkEnabled -XX:+CMSClassUnloadingEnabled
+         -XX:CMSInitiatingOccupancyFraction=80
+        -XX:+DisableExplicitGC -XX:+AggressiveOpts -XX:LargePageSizeInBytes=128M
+        -XX:SoftRefLRUPolicyMSPerMB=0 -Djava.awt.headless=true -XX:+PrintClassHistogram
+        -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC
+        -Xloggc:$GC_LOG_PATH -XX:+HeapDumpOnOutOfMemoryError
+        -XX:HeapDumpPath=$APP_HOME/logs/ "
+
+
+
+                -Xms512m -Xmx512m -Xss256k -Xmn128m
+                -XX:+UseFastAccessorMethods  原始类型优化
+                -XX+UseCMSCompactAtFullCollection full gc时压缩老年代碎片
+                -XX:CMSFullGCsBeforeCompaction=1  1次full gc后进行碎片压缩
+                -XX:LargePageSizeInBytes=128M
+                -XX:+HeapDumpOnOutOfMemoryError
+                -XX:HeapDumpPath=logs/
+
+
+
+

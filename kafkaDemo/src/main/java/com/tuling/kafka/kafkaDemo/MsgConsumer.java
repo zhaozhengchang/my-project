@@ -37,7 +37,7 @@ public class MsgConsumer {
 				System.out.printf("***************************************************offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
 			}
 			
-			if (records.count() > 0) { 
+			if (records.count() > 0) {
 				// 提交offset 
 //				consumer.commitSync();
 			}

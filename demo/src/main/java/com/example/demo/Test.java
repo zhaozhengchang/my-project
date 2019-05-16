@@ -1,9 +1,9 @@
 package com.example.demo;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
 
 /**
  * @author zhaoZhengchang
@@ -11,19 +11,25 @@ import java.util.Properties;
  * Description:
  **/
 
-public class Test {
-
+public abstract class Test {
     public static void main(String[] args) {
-        InputStream inputStream = Test.class.getResourceAsStream("/zzc.properties");
-        Properties redisProperties = new Properties();
-        try {
-            redisProperties.load(inputStream);
-        } catch (IOException e) {
-        }
+        sort();
+    }
 
-        String s = redisProperties.getProperty("zzc.name");
-        System.out.println(s);
+    public static void sort() {
+        System.out.println("请输入若干个单词");
+        Scanner input = new Scanner(System.in);
+        ArrayList<String> character = new ArrayList<>();
+       //控制集合中的元素
+        int n = input.nextInt();
+        for (int i = 0; i < n; i++) {
+            String s = input.next();
+            character.add(s);
         }
-
+        Collections.sort(character);
+        for (String w : character) {
+            System.out.println(w);
+        }
+    }
 
 }
